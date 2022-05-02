@@ -1,0 +1,14 @@
+{
+  "name": "api_todolist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "italo",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "uuid": "^8.3.2"
+  }
+}
