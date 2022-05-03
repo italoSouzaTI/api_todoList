@@ -1,11 +1,12 @@
 const { response } = require('express');
 const express = require('express');
 const { v4: uuidv4 } = require("uuid");
-require('./config/database');
+require('./src/config/database');
 const app = express();
 const port = 3000;
 
-let lists = []
+const Todo = require('./src/models/Todo')
+
 app.use(express.json());
 /*
     -> id
@@ -17,17 +18,23 @@ app.use(express.json());
     -> date_end
 
 */
-app.post("/list-todo", (req, resp) => {
+app.post("/list-todo", async (req, resp) => {
     const { title, hour, date_event } = req.body;
     const id = uuidv4();
-    lists.push({
+    const lists = {
         id,
         title,
         hour,
         date_event,
         date_create: new Date(),
-    });
-    return resp.status(201).send();
+    };
+    try {
+        await Todo.create(lists)
+        return resp.status(201).json('Registrado');
+    } catch (error) {
+        return resp.status(500).json({ error: error });
+    }
+
 })
 app.get("/list-todo", (req, resp) => {
     return resp.status(201).json({ lists });
