@@ -1,6 +1,5 @@
 const { response } = require('express');
 const express = require('express');
-const { v4: uuidv4 } = require("uuid");
 require('./src/config/database');
 const app = express();
 const port = 3000;
@@ -19,12 +18,10 @@ app.use(express.json());
 
 */
 app.post("/list-todo", async (req, resp) => {
-    const { title, hour, date_event } = req.body;
-    const id = uuidv4();
+    const { title, horario, date_event } = req.body;
     const lists = {
-        id,
         title,
-        hour,
+        horario,
         date_event,
         date_create: new Date(),
     };
@@ -36,8 +33,9 @@ app.post("/list-todo", async (req, resp) => {
     }
 
 })
-app.get("/list-todo", (req, resp) => {
-    return resp.status(201).json({ lists });
+app.get("/list-todo", async (req, resp) => {
+    const list = await Todo.find();
+    return resp.status(201).json({ list });
 })
 app.delete("/list-todo/:id", (req, resp) => {
     const { id } = req.params;
