@@ -1,6 +1,7 @@
 const { response } = require('express');
 const express = require('express');
 const { v4: uuidv4 } = require("uuid");
+require('./config/database');
 const app = express();
 const port = 3000;
 
@@ -28,21 +29,21 @@ app.post("/list-todo", (req, resp) => {
     });
     return resp.status(201).send();
 })
-app.get("/list-todo",(req, resp)=>{
-    return resp.status(201).json({lists});
+app.get("/list-todo", (req, resp) => {
+    return resp.status(201).json({ lists });
 })
-app.delete("/list-todo/:id",(req, resp)=>{
-    const {id}= req.params;
+app.delete("/list-todo/:id", (req, resp) => {
+    const { id } = req.params;
     console.log(id)
-    const newArray = lists.filter(item=>item.id != id);
+    const newArray = lists.filter(item => item.id != id);
     // console.log(newArray)
     lists = newArray;
     return resp.status(201).send();
 })
-app.put("/list-todo/:id",(req, resp)=>{
-    const {id}= req.params;
+app.put("/list-todo/:id", (req, resp) => {
+    const { id } = req.params;
     const data = req.body
-    const newArray = lists.find(item=>item.id===id);
+    const newArray = lists.find(item => item.id === id);
     // const ArrayPosition = lists.indexOf(id);
     console.log(newArray);
 
