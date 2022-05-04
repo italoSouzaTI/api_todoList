@@ -15,12 +15,11 @@ app.use(express.json());
     -> date_update
     -> date_create
     -> date_end
-
 */
 app.post("/list-todo", async (req, resp) => {
-    const { title, horario, date_event } = req.body;
+    const { titulo, horario, date_event } = req.body;
     const lists = {
-        title,
+        titulo,
         horario,
         date_event,
         date_create: new Date(),
@@ -31,12 +30,11 @@ app.post("/list-todo", async (req, resp) => {
     } catch (error) {
         return resp.status(500).json({ error: error });
     }
-
-})
+});
 app.get("/list-todo", async (req, resp) => {
     const list = await Todo.find();
     return resp.status(201).json({ list });
-})
+});
 app.delete("/list-todo/:id", async (req, resp) => {
     const { id } = req.params;
     const todo = await Todo.findOne({ _id: id });
@@ -51,20 +49,23 @@ app.delete("/list-todo/:id", async (req, resp) => {
         return resp.status(500).json({ error: error });
     }
 
-})
-app.put("/list-todo/:id", (req, resp) => {
+});
+app.put("/list-todo/:id", async (req, resp) => {
     const { id } = req.params;
     const data = req.body
-    const newArray = lists.find(item => item.id === id);
-    // const ArrayPosition = lists.indexOf(id);
-    console.log(newArray);
+    const todo = await Todo.findOne({ _id: id });
+    if (!todo) {
+        return resp.status(402).json({ menssage: 'Item não encontrado!' });
+    }
 
-    // Object.keys(data).forEach(el=>{
-    //     console.log(data[el])
-    // })
-    // lists = newArray;
-    // return resp.status(201).send();
-})
+    try {
+        await Todo.findOneAndUpdate({ _id: id }, data);
+        return resp.status(201).json('Alualizado com sucesso');
+    } catch (error) {
+        return resp.status(500).json({ error: error });
+    }
+
+});
 
 app.listen(port, () => {
     console.log(`Up server ${port}`)
