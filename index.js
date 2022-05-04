@@ -37,13 +37,20 @@ app.get("/list-todo", async (req, resp) => {
     const list = await Todo.find();
     return resp.status(201).json({ list });
 })
-app.delete("/list-todo/:id", (req, resp) => {
+app.delete("/list-todo/:id", async (req, resp) => {
     const { id } = req.params;
-    console.log(id)
-    const newArray = lists.filter(item => item.id != id);
-    // console.log(newArray)
-    lists = newArray;
-    return resp.status(201).send();
+    const todo = await Todo.findOne({ _id: id });
+    if (!todo) {
+        return resp.status(402).json({ menssage: 'Item não encontrado!' });
+    }
+
+    try {
+        await Todo.deleteOne({ _id: id });
+        return resp.status(201).json('Excluido com sucesso!');
+    } catch (error) {
+        return resp.status(500).json({ error: error });
+    }
+
 })
 app.put("/list-todo/:id", (req, resp) => {
     const { id } = req.params;
