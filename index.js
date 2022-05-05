@@ -1,11 +1,13 @@
 const express = require('express');
+const cors = require('cors')
 const validateItem = require('./src/helps/validationItem')
-require('./src/config/database');
+const Todo = require('./src/models/Todo')
 const app = express();
 const port = 3000;
+require('./src/config/database');
 
-const Todo = require('./src/models/Todo')
 
+app.use(cors())
 app.use(express.json());
 /*
     -> id
@@ -33,26 +35,30 @@ async function validateTodo (req, resp, next) {
 }
 app.post("/list-todo", async (req, resp) => {
     const { titulo, horario, date_event } = req.body;
-    const teste = validateItem(titulo, horario, date_event);
-    // const lists = {
-    //     titulo,
-    //     horario,
-    //     date_event,
-    //     date_create: new Date(),
-    // };
-    // try {
-    //     await Todo.create(lists)
-    //     return resp.status(201).json('Registrado');
-    // } catch (error) {
-    //     return resp.status(500).json({ error: error });
-    // }
+    const validationResponse = validateItem(titulo, horario, date_event);
+    console.log(validationResponse);
+    if (validationResponse) {
+        return resp.status(402).json({ menssage: `${validationResponse}` });
+    }
+    const lists = {
+        titulo,
+        horario,
+        date_event,
+        date_create: new Date(),
+    };
+    try {
+        await Todo.create(lists)
+        return resp.status(201).json('Registrado');
+    } catch (error) {
+        return resp.status(500).json({ error: error });
+    }
 });
 app.get("/list-todo", async (req, resp) => {
     const list = await Todo.find({ date_end: null });
     return resp.status(201).json({ list });
 });
 app.delete("/list-todo/:id", validateTodo, async (req, resp) => {
-    const { id } = request;
+    const { id } = req;
     try {
         //EXCLUSÃO DO LOGICA
         await Todo.findOneAndUpdate({ _id: id }, { date_end: new Date() });
