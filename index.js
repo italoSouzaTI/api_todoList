@@ -38,7 +38,7 @@ app.post("/list-todo", async (req, resp) => {
     const validationResponse = validateItem(titulo, horario, date_event);
     console.log(validationResponse);
     if (validationResponse) {
-        return resp.status(402).json({ menssage: `${validationResponse}` });
+        return resp.status(401).json({ menssage: `${validationResponse}` });
     }
     const lists = {
         titulo,

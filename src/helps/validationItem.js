@@ -1,13 +1,12 @@
 
-const validate = function validateItem (...agrs) {
-    console.log(agrs)
-    if (agrs[0] === undefined) {
+const validate = function validateItem (titulo,horario,date_event) {
+    if (titulo === undefined || titulo === '') {
         return 'Campo texto obrigatório'
     }
-    if (agrs[1] === undefined) {
+    if (horario === undefined || horario === '') {
         return 'Campo texto horario'
     }
-    if (agrs[2] === undefined) {
+    if (date_event === undefined || date_event === '') {
         return 'Campo texto data do evento'
     }
 }
